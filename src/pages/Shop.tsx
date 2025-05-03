@@ -5,19 +5,8 @@ import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import ProductGrid from '../components/shop/ProductGrid';
 import Filters from '../components/shop/Filters';
+import { Product } from '../types'; // Importar el tipo compartido
 
-// Define la interfaz para el tipo Product
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image1: string;
-  image2?: string;
-  category: string;
-  material: string;
-  type: string;
-}
 
 const Shop: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();

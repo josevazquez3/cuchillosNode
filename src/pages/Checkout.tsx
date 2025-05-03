@@ -6,22 +6,22 @@ import api from '../services/api';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 
-// Define interfaces para los tipos que estás utilizando
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+// // Define interfaces para los tipos que estás utilizando
+// interface CartItem {
+//   id: number;
+//   title: string;
+//   price: number;
+//   quantity: number;
+//   image: string;
+// }
 
-// Asegúrate de que esta interfaz coincida con la definida en AuthContext
-interface User {
-  id: number;
-  username: string;
-  email?: string; // Si email es opcional, marcarlo como tal
-  role: string;
-}
+// // Asegúrate de que esta interfaz coincida con la definida en AuthContext
+// interface User {
+//   id: number;
+//   username: string;
+//   email?: string; // Si email es opcional, marcarlo como tal
+//   role: string;
+// }
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useContext(CartContext);

@@ -1,14 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image1: string;
-  image2: string;
-}
+import { Product } from '../../types';
 
 interface ProductCardProps {
   product: Product;
@@ -17,7 +10,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { addItem } = useContext(CartContext);
-  
+ 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem({
@@ -27,9 +20,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       image: product.image1,
     });
   };
-  
+ 
   return (
-    <Link 
+    <Link
       to={`/product/${product.id}`}
       className="group block"
       onMouseEnter={() => setIsHovered(true)}
@@ -49,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className={`absolute inset-0 object-cover w-full h-full transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
           />
         </div>
-        
+       
         {/* Información del producto */}
         <div className="p-4">
           <h3 className="text-lg font-medium text-gray-900 truncate">{product.title}</h3>

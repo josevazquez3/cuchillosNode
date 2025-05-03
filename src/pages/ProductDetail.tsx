@@ -18,13 +18,13 @@ interface Product {
   type: string;
 }
 
-// Definir el tipo de los elementos del carrito (necesario para addItem)
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-}
+// // Definir el tipo de los elementos del carrito (necesario para addItem)
+// interface CartItem {
+//   id: number;
+//   title: string;
+//   price: number;
+//   image: string;
+// }
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

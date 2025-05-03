@@ -260,6 +260,11 @@ app.post('/api/orders', authenticateToken, (req, res) => {
   });
 });
 
+// // Manejar todas las demás rutas con React Router
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// });
+
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);

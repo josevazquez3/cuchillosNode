@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthContext, AuthProvider } from './context/AuthContext';
@@ -21,13 +22,19 @@ import AdminOrders from './pages/admin/Orders';
 import ProductForm from './pages/admin/ProductForm';
 import NotFound from './pages/NotFound';
 
+// Definir tipo para las props
+interface RouteProps {
+  children: ReactNode;
+}
+
+
+
 // Componente para rutas protegidas
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children }: RouteProps) => {
   const { isAuthenticated } = useContext(AuthContext);
   const location = useLocation();
   
   if (!isAuthenticated) {
-    // Redireccionar a la página de login con la ubicación anterior
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   
@@ -35,7 +42,7 @@ const PrivateRoute = ({ children }) => {
 };
 
 // Componente para rutas de administrador
-const AdminRoute = ({ children }) => {
+const AdminRoute = ({ children }: RouteProps) => {
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
   const location = useLocation();
   

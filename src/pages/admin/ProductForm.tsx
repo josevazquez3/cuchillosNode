@@ -98,68 +98,68 @@ const ProductForm: React.FC = () => {
     }
   };
   
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ // Busca esta parte del código y actualízala:
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    setSubmitting(true);
+    setError(null);
     
-    try {
-      setSubmitting(true);
-      setError(null);
-      
-      // Validar formulario
-      if (!formData.title || !formData.description || !formData.price) {
-        setError('Por favor, complete todos los campos obligatorios.');
-        setSubmitting(false);
-        return;
-      }
-      
-      // En modo de creación, requerir al menos una imagen
-      if (!isEditMode && !images.image1) {
-        setError('Por favor, suba al menos una imagen.');
-        setSubmitting(false);
-        return;
-      }
-      
-      // Crear FormData para enviar imágenes
-      const formDataToSend = new FormData();
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('price', formData.price);
-      formDataToSend.append('category', formData.category);
-      formDataToSend.append('material', formData.material);
-      formDataToSend.append('type', formData.type);
-      
-      if (images.image1) {
-        formDataToSend.append('images', images.image1);
-      }
-      
-      if (images.image2) {
-        formDataToSend.append('images', images.image2);
-      }
-      
-      let response;
-      
-      if (isEditMode) {
-        response = await api.put(`/products/${id}`, formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      } else {
-        response = await api.post('/products', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }
-      
-      // Redireccionar a la lista de productos
-      navigate('/admin/products');
-    } catch (error) {
-      console.error('Error al guardar el producto:', error);
-      setError('Ocurrió un error al guardar el producto. Por favor, inténtelo de nuevo.');
+    // Validar formulario
+    if (!formData.title || !formData.description || !formData.price) {
+      setError('Por favor, complete todos los campos obligatorios.');
       setSubmitting(false);
+      return;
     }
-  };
+    
+    // En modo de creación, requerir al menos una imagen
+    if (!isEditMode && !images.image1) {
+      setError('Por favor, suba al menos una imagen.');
+      setSubmitting(false);
+      return;
+    }
+    
+    // Crear FormData para enviar imágenes
+    const formDataToSend = new FormData();
+    formDataToSend.append('title', formData.title);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('price', formData.price);
+    formDataToSend.append('category', formData.category);
+    formDataToSend.append('material', formData.material);
+    formDataToSend.append('type', formData.type);
+    
+    if (images.image1) {
+      formDataToSend.append('images', images.image1);
+    }
+    
+    if (images.image2) {
+      formDataToSend.append('images', images.image2);
+    }
+    
+    // Elimina la variable response que no se usa
+    if (isEditMode) {
+      await api.put(`/products/${id}`, formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    } else {
+      await api.post('/products', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    }
+    
+    // Redireccionar a la lista de productos
+    navigate('/admin/products');
+  } catch (error) {
+    console.error('Error al guardar el producto:', error);
+    setError('Ocurrió un error al guardar el producto. Por favor, inténtelo de nuevo.');
+    setSubmitting(false);
+  }
+};
   
   if (loading) {
     return (
