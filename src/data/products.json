@@ -1,0 +1,224 @@
+{
+    "products": [
+      {
+        "id": 1,
+        "title": "Cuchillo Chef Profesional",
+        "description": "Cuchillo de chef de 8 pulgadas forjado en acero inoxidable alemán de alta calidad. Mango ergonómico de pakkawood para máximo control y comodidad.",
+        "price": 12990,
+        "image1": "https://images.unsplash.com/photo-1570643509348-4fe54c998566?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "image2": "https://images.unsplash.com/photo-1574966740793-953ad374e8fe?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "category": "Cuchillos de cocina",
+        "material": "Acero inoxidable alemán",
+        "type": "Chef"
+      },
+      {
+        "id": 2,
+        "title": "Set de Cuchillos 5 Piezas",
+        "description": "Juego completo de 5 cuchillos esenciales para la cocina, incluye cuchillo de chef, santoku, utilidad, deshuesador y paring. Acero inoxidable con filo de precisión.",
+        "price": 24990,
+        "image1": "https://images.unsplash.com/photo-1589071634465-75d7ce737fa8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "image2": "https://images.unsplash.com/photo-1602063238855-524c4d8b9b18?q=80&w=1509&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "category": "Sets",
+        "material": "Acero inoxidable",
+        "type": "Set completo"
+      },
+      {
+        "id": 3,
+        "title": "Cuchillo Santoku Damasco",
+        "description": "Cuchillo santoku de 7 pulgadas con patrón de damasco de 67 capas. Núcleo de acero VG-10 y mango de madera de ébano. Ideal para cortes precisos de carne, pescado y vegetales.",
+        "price": 18990,
+        "image1": "https://images.unsplash.com/photo-1569606665155-6f0c90944f28?q=80&w=1430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "image2": "https://images.unsplash.com/photo-1717126916200-ad452960c7ee?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "category": "Cuchillos de cocina",
+        "material": "Acero damasco",
+        "type": "Santoku"
+      },
+      {
+        "id": 4,
+        "title": "Cuchillo Deshuesador Flexible",
+        "description": "Cuchillo deshuesador de 6 pulgadas con hoja flexible para separar fácilmente la carne del hueso. Acero inoxidable de alta calidad y mango antideslizante.",
+        "price": 8990,
+        "image1": "https://images.unsplash.com/photo-1596633609591-e4e1e9e06b7f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Q3VjaGlsbG8lMjBEZXNodWVzYWRvcnxlbnwwfHwwfHx8MA%3D%3D",
+        "image2": "https://plus.unsplash.com/premium_photo-1700612685399-876823158711?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Q3VjaGlsbG8lMjBEZXNodWVzYWRvcnxlbnwwfHwwfHx8MA%3D%3D",
+        "category": "Cuchillos de cocina",
+        "material": "Acero inoxidable",
+        "type": "Deshuesador"
+      },
+      {
+        "id": 5,
+        "title": "Piedra de Afilar Doble Cara",
+        "description": "Piedra de afilar de doble cara 1000/6000 grit para mantener tus cuchillos con filo profesional. Incluye base de bambú antideslizante y guía de ángulo.",
+        "price": 6990,
+        "image1": "https://t4.ftcdn.net/jpg/03/56/42/11/360_F_356421152_P0TZgL90edb0VrhAZqZXyxMaxTDRLaXb.jpg",
+        "image2": "https://images.squarespace-cdn.com/content/v1/5d96a22649af0e131e78ca1c/1571420388434-OHQGWZLMLFP8HEOHDXUY/20191013-DSC06793.jpg?format=1000w",
+        "category": "Accesorios",
+        "material": "Corindón",
+        "type": "Afilador"
+      },
+      {
+        "id": 6,
+        "title": "Cuchillo Nakiri Japonés",
+        "description": "Cuchillo nakiri tradicional japonés de 6.5 pulgadas, ideal para cortar vegetales. Forjado en acero inoxidable con alto contenido de carbono para mantener el filo por más tiempo.",
+        "price": 15990,
+        "image1": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHiMNTJOnQNX_H-rrOhDptFwCwtgYkipALaw&s",
+        "image2": "https://homewild.shop/cdn/shop/files/W.C.Square-37.jpg?v=1715768351&width=2160",
+        "category": "Cuchillos de cocina",
+        "material": "Acero alto carbono",
+        "type": "Nakiri"
+      },
+      {
+        "id": 7,
+        "title": "Cuchillo de Pan Serrado",
+        "description": "Cuchillo de pan con hoja serrada de 8 pulgadas que corta fácilmente cortezas duras sin aplastar el interior suave. Mango ergonómico para máximo control.",
+        "price": 7990,
+        "image1": "https://www.lecuine.com/blog/wp-content/uploads/2016/03/cuchillos-para-pan-625x408.jpg.webp",
+        "image2": "https://www.cuchillosimportados.com.ar/wp-content/uploads/2022/05/Global-G9-e1651617964216.jpg",
+        "category": "Cuchillos de cocina",
+        "material": "Acero inoxidable",
+        "type": "Pan"
+      },
+      {
+        "id": 8,
+        "title": "Bloque de Cuchillos Magnético",
+        "description": "Bloque magnético de madera de acacia para almacenar y exhibir tus cuchillos con estilo. Diseño elegante que se adapta a cualquier cocina moderna.",
+        "price": 9990,
+        "image1": "https://m.media-amazon.com/images/I/61tzbk9jDML._AC_UF894,1000_QL80_.jpg",
+        "image2": "https://m.media-amazon.com/images/I/71sxYl5t0cS._AC_SL1500_.jpg",
+        "category": "Accesorios",
+        "material": "Madera de acacia",
+        "type": "Almacenamiento"
+      },
+      {
+        "id": 9,
+        "title": "Cuchillo Cleaver Chino",
+        "description": "Cuchillo cleaver tradicional chino de 7 pulgadas, perfecto tanto para cortar carnes como para picar hierbas y vegetales. Forjado en una sola pieza para mayor durabilidad.",
+        "price": 13990,
+        "image1": "https://www.musashihamono.com/cdn/shop/files/Chinese-Cleaver-VG-10-Damascus-Cherry-Handle-180mm-Musashi-Japanese-Kitchen-Knives_grande.jpg?v=1744169069",
+        "image2": "https://tokushuknife.com/cdn/shop/files/NakagawaCleaveronBlack1.jpg?v=1704182972",
+        "category": "Cuchillos de cocina",
+        "material": "Acero alto carbono",
+        "type": "Cleaver"
+      },
+      {
+        "id": 10,
+        "title": "Cuchillo Steak Set 6 Piezas",
+        "description": "Juego de 6 cuchillos para steak con hoja de acero inoxidable y mango de madera de pakka. Perfectos para servir carnes en la mesa con elegancia.",
+        "price": 11990,
+        "image1": "https://m.media-amazon.com/images/I/61-pzJ22JhL._AC_SL1403_.jpghttps://m.media-amazon.com/images/I/61-pzJ22JhL._AC_SL1403_.jpg",
+        "image2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7z-Ko0VR38SoC8MQ5HoIXzMqGKegE887jTQ&s",
+        "category": "Sets",
+        "material": "Acero inoxidable",
+        "type": "Steak"
+      },
+      {
+        "id": 11,
+        "title": "Cuchillo Sushi Yanagiba",
+        "description": "Cuchillo yanagiba tradicional japonés de 10 pulgadas para cortes perfectos de sushi y sashimi. Afilado por un solo lado según la tradición japonesa.",
+        "price": 27990,
+        "image1": "https://m.media-amazon.com/images/I/61o1c17q68S._AC_SL1500_.jpg",
+        "image2": "https://tramontinaar.vtexassets.com/arquivos/ids/174813/24039009PNM001G.jpg?v=638252813996770000",
+        "category": "Cuchillos especializados",
+        "material": "Acero inoxidable japonés",
+        "type": "Yanagiba"
+      },
+      {
+        "id": 12,
+        "title": "Tijeras de Cocina Multiuso",
+        "description": "Tijeras de cocina profesionales con hojas de acero inoxidable y mango ergonómico. Desmontables para facilitar la limpieza y con función cascanueces integrada.",
+        "price": 4990,
+        "image1": "https://acdn-us.mitiendanube.com/stores/001/836/042/products/cce91472-4559-4825-8c62-f186f6e919b41-e8a0a09952be3f14f316678734455971-1024-1024.jpeg",
+        "image2": "https://http2.mlstatic.com/D_NQ_NP_602601-MLA82006121831_012025-O.webp",
+        "category": "Accesorios",
+        "material": "Acero inoxidable",
+        "type": "Tijeras"
+      },
+      {
+        "id": 13,
+        "title": "Cuchillo Paring Premium",
+        "description": "Cuchillo paring de 3.5 pulgadas para trabajos detallados y precisos. Perfecto para pelar, decorar y trabajar con frutas y vegetales pequeños.",
+        "price": 5990,
+        "image1": "https://acdn-us.mitiendanube.com/stores/929/820/products/cuchillo-sakura-chef-black-ebano-33cm-1-379e27b6af97087b1517251501918052-480-0.jpg",
+        "image2": "https://acdn-us.mitiendanube.com/stores/929/820/products/paring-pro-1-4d2848fa5273b46b7e17184188242946-480-0.jpg",
+        "category": "Cuchillos de cocina",
+        "material": "Acero inoxidable",
+        "type": "Paring"
+      },
+      {
+        "id": 14,
+        "title": "Chaira Profesional",
+        "description": "Chaira profesional de 10 pulgadas con mango ergonómico. Mantiene el filo de tus cuchillos entre afilados más profundos con la piedra.",
+        "price": 8490,
+        "image1": "https://http2.mlstatic.com/D_NQ_NP_945085-MLA76721868752_062024-O.webp",
+        "image2": "https://http2.mlstatic.com/D_NQ_NP_933312-MLA53686974995_022023-O.webp",
+        "category": "Accesorios",
+        "material": "Acero al carbono",
+        "type": "Afilador"
+      },
+      {
+        "id": 15,
+        "title": "Cuchillo Filetero Flexible",
+        "description": "Cuchillo filetero de 7 pulgadas con hoja flexible para cortes precisos de filetes de pescado. Diseñado para profesionales y entusiastas de la cocina.",
+        "price": 9990,
+        "image1": "https://http2.mlstatic.com/D_NQ_NP_736980-MLA54816042470_042023-O.webp",
+        "image2": "https://http2.mlstatic.com/D_976705-MLA74843718840_032024-O.jpg",
+        "category": "Cuchillos especializados",
+        "material": "Acero inoxidable",
+        "type": "Filetero"
+      },
+      {
+        "id": 16,
+        "title": "Tabla de Cortar de Nogal",
+        "description": "Tabla de cortar premium de madera de nogal americano, con canal para jugos y asas integradas. Protege tus cuchillos mientras disfrutas cortando.",
+        "price": 16990,
+        "image1": "https://http2.mlstatic.com/D_NQ_NP_942631-CBT50624466337_072022-O.webp",
+        "image2": "https://assets.katogroup.eu/i/katogroup/ZW35123-100-0_01_zwilling?%24product-image%24=&fmt=auto&h=434&w=652",
+        "category": "Accesorios",
+        "material": "Madera de nogal",
+        "type": "Tabla"
+      },
+      {
+        "id": 17,
+        "title": "Cuchillo de Queso Set",
+        "description": "Set de 3 cuchillos especializados para diferentes tipos de quesos: duro, semiduro y blando. Mangos de madera de olivo y hojas de acero inoxidable.",
+        "price": 7490,
+        "image1": "https://jumboargentina.vtexassets.com/arquivos/ids/857301/Set-X-3-Cuchillos-Para-Queso-Praga-Negro-16-Cm-1-1034676.jpg?v=638757597873870000",
+        "image2": "https://http2.mlstatic.com/D_847382-MLA47154585502_082021-O.jpg",
+        "category": "Sets",
+        "material": "Acero inoxidable",
+        "type": "Queso"
+      },
+      {
+        "id": 18,
+        "title": "Cuchillo Gyuto Profesional",
+        "description": "Cuchillo gyuto japonés de 8.5 pulgadas, versátil y multiuso similar al cuchillo de chef occidental pero con características japonesas. Excelente balance y precisión.",
+        "price": 21990,
+        "image1": "https://http2.mlstatic.com/D_959398-MLA82916784084_032025-O.jpg",
+        "image2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN5D8szbIIc9zxcIi7GV-FhvuImD3ifI6PzA&s",
+        "category": "Cuchillos de cocina",
+        "material": "Acero VG-10",
+        "type": "Gyuto"
+      },
+      {
+        "id": 19,
+        "title": "Funda Protectora para Cuchillos",
+        "description": "Set de 5 fundas protectoras para cuchillos de diferentes tamaños. Protege el filo durante el almacenamiento y transporte. Material duradero y lavable.",
+        "price": 3990,
+        "image1": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHr_Iihpe52m0sN_czQRzE6db-lsakzDtNqw&s",
+        "image2": "https://i.ytimg.com/vi/sudqyTLiD6I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCSb8jeL2MNuxUMC1SHUqaxHtTnWg",
+        "category": "Accesorios",
+        "material": "Plástico y tela",
+        "type": "Protección"
+      },
+      {
+        "id": 20,
+        "title": "Cuchillo de Caza Damascus",
+        "description": "Cuchillo de caza artesanal con hoja de acero damasco de 256 capas y mango de asta de ciervo. Incluye funda de cuero hecha a mano. Pieza de colección.",
+        "price": 32990,
+        "image1": "https://m.media-amazon.com/images/I/71bM2xGW6lL._AC_SL1280_.jpg",
+        "image2": "https://m.media-amazon.com/images/I/91zOp3pSARL._AC_SL1500_.jpg",
+        "category": "Cuchillos especializados",
+        "material": "Acero damasco",
+        "type": "Caza"
+      }
+    ]
+  }

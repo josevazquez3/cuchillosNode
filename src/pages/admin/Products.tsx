@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../services/api';
+// Importamos directamente el JSON
+import productsData from '../../data/products.json';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from './Sidebar';
@@ -27,18 +28,15 @@ const AdminProducts: React.FC = () => {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await api.get('/products');
-        setProducts(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error al obtener productos:', error);
-        setLoading(false);
-      }
-    };
+    // En lugar de llamar a la API, usamos los datos del JSON directamente
+    // Simulamos un pequeño retraso para mostrar el loader
+    const timer = setTimeout(() => {
+      setProducts(productsData.products);
+      setLoading(false);
+    }, 500);
     
-    fetchProducts();
+    // Limpiamos el timer si el componente se desmonta
+    return () => clearTimeout(timer);
   }, []);
   
   // Añade tipado al parámetro product
@@ -51,9 +49,8 @@ const AdminProducts: React.FC = () => {
     if (!productToDelete) return;
     
     try {
-      await api.delete(`/products/${productToDelete.id}`);
-      
-      // Actualizar la lista de productos
+      // Simulamos la eliminación del producto (sin llamar a la API)
+      // Solo actualizamos el estado local
       setProducts(products.filter(p => p.id !== productToDelete.id));
       
       setShowDeleteModal(false);

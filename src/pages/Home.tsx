@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+import productsData from '../data/products.json';
 import ProductGrid from '../components/shop/ProductGrid';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
+import { Product } from '../types';
 
 // Componente para el carrusel
 const Carousel = ({ images }: { images: string[] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setIsAnimating(true);
@@ -36,11 +37,10 @@ const Carousel = ({ images }: { images: string[] }) => {
       {images.map((image, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
-            index === currentSlide 
-              ? 'opacity-100 scale-100' 
+          className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${index === currentSlide
+              ? 'opacity-100 scale-100'
               : 'opacity-0 scale-105'
-          }`}
+            }`}
         >
           <img
             src={image}
@@ -49,10 +49,10 @@ const Carousel = ({ images }: { images: string[] }) => {
           />
         </div>
       ))}
-      
+
       {/* Overlay con degradado */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
-      
+
       {/* Controles del carrusel */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
         {images.map((_, index) => (
@@ -60,11 +60,10 @@ const Carousel = ({ images }: { images: string[] }) => {
             key={index}
             onClick={() => goToSlide(index)}
             aria-label={`Ir a la imagen ${index + 1}`}
-            className={`transition-all duration-300 ${
-              index === currentSlide 
-                ? 'w-12 h-3 bg-accent rounded-full' 
+            className={`transition-all duration-300 ${index === currentSlide
+                ? 'w-12 h-3 bg-accent rounded-full'
                 : 'w-3 h-3 bg-white/60 rounded-full hover:bg-white/80'
-            }`}
+              }`}
           />
         ))}
       </div>
@@ -81,7 +80,7 @@ interface VisibilityState {
 }
 
 const Home: React.FC = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState<VisibilityState>({});
 
@@ -106,7 +105,27 @@ const Home: React.FC = () => {
 
     return () => observer.disconnect();
   }, []);
-  
+
+  // Cargar productos destacados del JSON
+  useEffect(() => {
+    // Simulamos la carga asíncrona para mantener la experiencia
+    const timer = setTimeout(() => {
+      // Obtenemos todos los productos del JSON
+      const allProducts = productsData.products;
+      
+      // Seleccionamos 6 productos aleatorios como destacados
+      // Otra opción sería mostrar los primeros 6 productos
+      const randomProducts = [...allProducts]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 6);
+      
+      setFeaturedProducts(randomProducts);
+      setLoading(false);
+    }, 800); // Pequeño retraso para simular carga
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   // URLs de imágenes actualizadas para el carrusel
   const carouselImages = [
     'https://images.unsplash.com/photo-1569606665155-6f0c90944f28?q=80&w=1430&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -141,30 +160,15 @@ const Home: React.FC = () => {
     }
   ];
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const response = await api.get('/products?limit=6');
-        setFeaturedProducts(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-        setLoading(false);
-      }
-    };
-    
-    fetchFeaturedProducts();
-  }, []);
-  
   return (
     <div className="flex flex-col min-h-screen bg-secondary/5">
       <Header />
-      
+
       <main className="flex-grow">
         {/* Hero Section con Carrusel */}
         <section className="relative">
           <Carousel images={carouselImages} />
-          
+
           {/* Contenido del Hero */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="container-custom text-center text-white px-4">
@@ -200,7 +204,7 @@ const Home: React.FC = () => {
             </svg>
           </div>
         </section>
-        
+
         {/* Sección: Por qué elegirnos */}
         <section id="features" className="py-24 bg-white animate-on-scroll">
           <div className="container-custom">
@@ -212,7 +216,7 @@ const Home: React.FC = () => {
                 Cada cuchillo es una obra maestra, creada con técnicas ancestrales y tecnología moderna
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[
                 {
@@ -237,11 +241,10 @@ const Home: React.FC = () => {
                   )
                 }
               ].map((feature, index) => (
-                <div 
+                <div
                   key={index}
-                  className={`bg-gray-50 p-8 rounded-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
-                    isVisible.features ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                  }`}
+                  className={`bg-gray-50 p-8 rounded-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${isVisible.features ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    }`}
                   style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6 mx-auto transform transition-transform duration-300 hover:rotate-12">
@@ -258,7 +261,7 @@ const Home: React.FC = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Sección de Proceso */}
         <section id="process" className="py-24 bg-primary text-white animate-on-scroll">
           <div className="container-custom">
@@ -285,8 +288,8 @@ const Home: React.FC = () => {
                       description: "Múltiples etapas de afilado hasta alcanzar el filo perfecto"
                     }
                   ].map((step, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="flex items-start group"
                       style={{ transitionDelay: `${index * 200}ms` }}
                     >
@@ -318,7 +321,7 @@ const Home: React.FC = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Productos Destacados */}
         <section id="products" className="py-24 bg-white animate-on-scroll">
           <div className="container-custom">
@@ -336,7 +339,7 @@ const Home: React.FC = () => {
                 </svg>
               </Link>
             </div>
-            
+
             {loading ? (
               <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-accent"></div>
@@ -348,23 +351,21 @@ const Home: React.FC = () => {
             )}
           </div>
         </section>
-        
+
         {/* Testimonios */}
         <section id="testimonials" className="py-24 bg-gray-50 animate-on-scroll">
           <div className="container-custom">
-            <h2 className={`text-4xl md:text-5xl font-bold text-center mb-16 text-primary transition-all duration-1000 ${
-              isVisible.testimonials ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
+            <h2 className={`text-4xl md:text-5xl font-bold text-center mb-16 text-primary transition-all duration-1000 ${isVisible.testimonials ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}>
               LO QUE DICEN NUESTROS CLIENTES
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {testimonials.map((testimonial, index) => (
-                <div 
+                <div
                   key={index}
-                  className={`bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
-                    isVisible.testimonials ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                  }`}
+                  className={`bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${isVisible.testimonials ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    }`}
                   style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   <div className="flex items-center mb-6">
@@ -393,7 +394,7 @@ const Home: React.FC = () => {
             </div>
           </div>
         </section>
-        
+
         {/* CTA Final */}
         <section className="py-24 bg-gradient-to-r from-primary to-primary/90 text-white relative overflow-hidden">
           {/* Patrón de fondo */}
@@ -429,7 +430,7 @@ const Home: React.FC = () => {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

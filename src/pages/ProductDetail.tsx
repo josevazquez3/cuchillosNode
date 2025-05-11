@@ -1,293 +1,264 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
-import { CartContext } from '../context/CartContext';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
+import productsData from '../data/products.json';
 
-// Definir la interfaz para el producto
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image1: string;
-  image2?: string;
-  category: string;
-  material: string;
-  type: string;
-}
-
-// // Definir el tipo de los elementos del carrito (necesario para addItem)
-// interface CartItem {
-//   id: number;
-//   title: string;
-//   price: number;
-//   image: string;
-// }
-
-const ProductDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
+const ProductDetail = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeImage, setActiveImage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(0);
-  const { addItem } = useContext(CartContext);
   
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await api.get(`/products/${id}`);
-        setProduct(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching product:', error);
-        setLoading(false);
-      }
-    };
+    setLoading(true);
     
-    fetchProduct();
+    if (id && productsData && productsData.products) {
+      const numericId = parseInt(id);
+      const foundProduct = productsData.products.find(p => p.id === numericId);
+      
+      if (foundProduct) {
+        setProduct(foundProduct);
+        setActiveImage(foundProduct.image1);
+        console.log("Producto encontrado:", foundProduct);
+      } else {
+        console.log("Producto no encontrado para ID:", numericId);
+      }
+    }
+    
+    setTimeout(() => {
+      setLoading(false);
+    }, 300); // Pequeño tiempo de carga para la animación
   }, [id]);
   
+  const handleQuantityChange = (e) => {
+    setQuantity(parseInt(e.target.value));
+  };
+  
   const handleAddToCart = () => {
-    if (product) {
-      // Añadir producto al carrito con la cantidad seleccionada
-      for (let i = 0; i < quantity; i++) {
-        addItem({
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image1,
-        });
-      }
-      
-      // Reset quantity after adding to cart
-      setQuantity(1);
-    }
+    alert(`Producto ${product.title} añadido al carrito (${quantity} unidades)`);
+    // Aquí iría la lógica real de añadir al carrito
   };
-  
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value > 0) {
-      setQuantity(value);
-    }
-  };
-  
-  const incrementQuantity = () => {
-    setQuantity(prev => prev + 1);
-  };
-  
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
-    }
-  };
-  
-  // El resto del componente sigue igual...
   
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <div className="flex-grow flex justify-center items-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-accent"></div>
-        </div>
-        <Footer />
+      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-600"></div>
       </div>
     );
   }
   
   if (!product) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <div className="flex-grow container-custom py-12">
-          <div className="bg-red-50 border-l-4 border-red-400 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">
-                  Producto no encontrado. <Link to="/shop" className="font-medium underline">Volver a la tienda</Link>
-                </p>
-              </div>
-            </div>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+          <svg className="mx-auto h-16 w-16 text-red-500 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 className="text-2xl font-bold mb-4">Producto no encontrado</h2>
+          <p className="text-gray-600 mb-8">El producto que estás buscando no existe o ha sido eliminado.</p>
+          <Link 
+            to="/shop" 
+            className="inline-block bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200"
+          >
+            Volver a la tienda
+          </Link>
         </div>
-        <Footer />
       </div>
     );
   }
   
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      
-      <main className="flex-grow py-12">
-        <div className="container-custom">
-          {/* Breadcrumbs */}
-          <div className="mb-6">
-            <nav className="flex" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 md:space-x-3">
-                <li className="inline-flex items-center">
-                  <Link to="/" className="text-gray-500 hover:text-accent">
-                    Inicio
-                  </Link>
-                </li>
-                <li>
-                  <div className="flex items-center">
-                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <Link to="/shop" className="ml-1 text-gray-500 hover:text-accent md:ml-2">
-                      Tienda
-                    </Link>
-                  </div>
-                </li>
-                <li aria-current="page">
-                  <div className="flex items-center">
-                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span className="ml-1 text-gray-500 md:ml-2 font-medium">
-                      {product.title}
-                    </span>
-                  </div>
-                </li>
-              </ol>
-            </nav>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Imágenes del producto */}
-            <div>
-              <div className="mb-4 aspect-w-1 aspect-h-1 overflow-hidden rounded-lg bg-gray-100">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumbs */}
+        <nav className="flex mb-8">
+          <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <li>
+              <Link to="/" className="hover:text-red-600 transition-colors">Inicio</Link>
+            </li>
+            <li>
+              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </li>
+            <li>
+              <Link to="/shop" className="hover:text-red-600 transition-colors">Tienda</Link>
+            </li>
+            <li>
+              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </li>
+            <li className="font-medium text-red-600">{product.title}</li>
+          </ol>
+        </nav>
+        
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0">
+            {/* Sección de imágenes */}
+            <div className="p-6 lg:p-8 bg-gray-50">
+              <div className="aspect-square overflow-hidden rounded-xl bg-white flex items-center justify-center mb-4 border border-gray-200">
                 <img
-                  src={activeImage === 0 ? product.image1 : product.image2}
+                  src={activeImage}
                   alt={product.title}
-                  className="h-full w-full object-cover object-center"
+                  className="object-contain h-full w-full p-4"
                 />
               </div>
               
-              {product.image2 && (
-                <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => setActiveImage(product.image1)}
+                  className={`aspect-square overflow-hidden rounded-lg border-2 transition-all ${
+                    activeImage === product.image1 
+                      ? 'border-red-600 shadow-md' 
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <img
+                    src={product.image1}
+                    alt={`${product.title} - Vista principal`}
+                    className="object-cover h-full w-full"
+                  />
+                </button>
+                
+                {product.image2 && (
                   <button
-                    onClick={() => setActiveImage(0)}
-                    className={`aspect-w-1 aspect-h-1 overflow-hidden rounded-lg ${activeImage === 0 ? 'ring-2 ring-accent' : ''}`}
-                  >
-                    <img
-                      src={product.image1}
-                      alt={`${product.title} - Vista 1`}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </button>
-                  <button
-                    onClick={() => setActiveImage(1)}
-                    className={`aspect-w-1 aspect-h-1 overflow-hidden rounded-lg ${activeImage === 1 ? 'ring-2 ring-accent' : ''}`}
+                    onClick={() => setActiveImage(product.image2)}
+                    className={`aspect-square overflow-hidden rounded-lg border-2 transition-all ${
+                      activeImage === product.image2 
+                        ? 'border-red-600 shadow-md' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
                   >
                     <img
                       src={product.image2}
-                      alt={`${product.title} - Vista 2`}
-                      className="h-full w-full object-cover object-center"
+                      alt={`${product.title} - Vista alternativa`}
+                      className="object-cover h-full w-full"
                     />
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             
-            {/* Información del producto */}
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.title}</h1>
-              
-              <div className="text-2xl font-bold text-accent mb-6">
-                ${product.price.toLocaleString()}
-              </div>
-              
-              <div className="mb-8">
-                <p className="text-gray-700">{product.description}</p>
-              </div>
-              
-              <div className="space-y-6">
-                {/* Especificaciones */}
-                <div className="border-t border-b border-gray-200 py-4 space-y-3">
-                  {product.category && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Categoría:</span>
-                      <span className="font-medium">{product.category}</span>
-                    </div>
-                  )}
-                  
-                  {product.material && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Material:</span>
-                      <span className="font-medium">{product.material}</span>
-                    </div>
-                  )}
-                  
-                  {product.type && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Tipo:</span>
-                      <span className="font-medium">{product.type}</span>
-                    </div>
-                  )}
+            {/* Sección de información */}
+            <div className="p-6 lg:p-8 flex flex-col">
+              <div className="flex-grow">
+                <div className="inline-block px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium mb-4">
+                  {product.category}
                 </div>
                 
-                {/* Selección de cantidad */}
-                <div>
-                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
-                    Cantidad
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                  {product.title}
+                </h1>
+                
+                <div className="flex items-center mb-6">
+                  <span className="text-3xl font-bold text-red-600">
+                    ${product.price.toLocaleString()}
+                  </span>
+                  <span className="ml-2 text-sm text-gray-500">(Incluye impuestos)</span>
+                </div>
+                
+                <div className="mb-6">
+                  <h2 className="text-lg font-medium text-gray-900 mb-2">Descripción</h2>
+                  <p className="text-gray-600">{product.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-medium text-gray-900 mb-1">Material</h3>
+                    <p className="text-gray-600">{product.material}</p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-medium text-gray-900 mb-1">Tipo</h3>
+                    <p className="text-gray-600">{product.type}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-200 pt-6">
+                <div className="flex items-center justify-between mb-6">
+                  <label htmlFor="quantity" className="text-gray-700 font-medium">
+                    Cantidad:
                   </label>
-                  <div className="flex rounded-md">
-                    <button
-                      type="button"
-                      onClick={decrementQuantity}
-                      className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  <div className="flex items-center border border-gray-300 rounded-lg">
+                    <button 
+                      onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                      className="px-3 py-2 text-gray-600 hover:bg-gray-100"
                     >
-                      <span className="sr-only">Decrementar</span>
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                      </svg>
+                      -
                     </button>
                     <input
                       type="number"
                       id="quantity"
-                      name="quantity"
                       min="1"
+                      max="10"
                       value={quantity}
                       onChange={handleQuantityChange}
-                      className="block w-24 border-gray-300 rounded-none focus:border-accent focus:ring-accent text-center"
+                      className="w-12 text-center border-0 focus:ring-0"
                     />
-                    <button
-                      type="button"
-                      onClick={incrementQuantity}
-                      className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                    <button 
+                      onClick={() => quantity < 10 && setQuantity(quantity + 1)}
+                      className="px-3 py-2 text-gray-600 hover:bg-gray-100"
                     >
-                      <span className="sr-only">Incrementar</span>
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12M6 12h12" />
-                      </svg>
+                      +
                     </button>
                   </div>
                 </div>
                 
-                {/* Botón de compra */}
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 px-4 rounded transition-colors"
-                >
-                  Añadir al Carrito
-                </button>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={handleAddToCart}
+                    className="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg shadow-sm transition-colors"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Añadir al carrito
+                  </button>
+                  
+                  <button
+                    className="w-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-6 rounded-lg shadow-sm transition-colors"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Añadir a favoritos
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
-      
-      <Footer />
+        
+        {/* Sección de productos relacionados (opcional) */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">También te puede interesar</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {productsData.products
+              .filter(p => p.category === product.category && p.id !== product.id)
+              .slice(0, 4)
+              .map(relatedProduct => (
+                <Link 
+                  key={relatedProduct.id} 
+                  to={`/product/${relatedProduct.id}`}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <img 
+                      src={relatedProduct.image1} 
+                      alt={relatedProduct.title} 
+                      className="object-cover w-full h-full transition-transform hover:scale-105" 
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-medium text-gray-900 mb-1">{relatedProduct.title}</h3>
+                    <p className="text-red-600 font-bold">${relatedProduct.price.toLocaleString()}</p>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

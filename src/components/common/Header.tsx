@@ -28,6 +28,7 @@ const Header: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/" className="hover:text-accent transition-colors">Inicio</Link>
             <Link to="/shop" className="hover:text-accent transition-colors">Tienda</Link>
+            <Link to="/knife-types" className="hover:text-accent transition-colors">Tipos de Cuchillos</Link>
             <Link to="/about" className="hover:text-accent transition-colors">Nosotros</Link>
             <Link to="/contact" className="hover:text-accent transition-colors">Contacto</Link>
           </nav>
@@ -134,6 +135,9 @@ const Header: React.FC = () => {
               </Link>
               <Link to="/shop" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Tienda
+              </Link>
+              <Link to="/knife-types" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Tipos de Cuchillos
               </Link>
               <Link to="/about" className="hover:text-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Nosotros

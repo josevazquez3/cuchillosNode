@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -5,169 +6,119 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from './Sidebar';
 
+// Interface para el producto
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  image1: string;
+  image2?: string;
+  category: string;
+  material: string;
+  type: string;
+}
+
+// Interface para los datos del formulario
+interface FormData {
+  title: string;
+  description: string;
+  price: number;
+  image1: string;
+  image2: string;
+  category: string;
+  material: string;
+  type: string;
+}
+
 const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const isEditMode = Boolean(id);
-  
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(id ? true : false);
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
-    price: '',
-    category: '',
-    material: '',
-    type: '',
-  });
-  
-  const [images, setImages] = useState({
-    image1: null,
-    image2: null,
-  });
-  
-  const [imagePreview, setImagePreview] = useState({
+    price: 0,
     image1: '',
     image2: '',
+    category: '',
+    material: '',
+    type: ''
   });
   
-  const [loading, setLoading] = useState(isEditMode);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Categorías, materiales y tipos disponibles
-  const categories = ['Chef', 'Santoku', 'Utilitario', 'Para pelar'];
-  const materials = ['Acero inoxidable', 'Acero de carbono', 'Damasco'];
-  const types = ['Cocina', 'Caza', 'Parrilla'];
-  
   useEffect(() => {
-    if (isEditMode) {
+    // Si hay un ID, estamos editando un producto existente
+    if (id) {
       const fetchProduct = async () => {
         try {
-          const response = await api.get(`/products/${id}`);
-          const product = response.data;
+          // Usamos getById para obtener el producto por su ID
+          const response = await api.getById(parseInt(id));
           
+          // Actualizamos el estado del formulario con los datos del producto
           setFormData({
-            title: product.title,
-            description: product.description,
-            price: product.price.toString(),
-            category: product.category,
-            material: product.material,
-            type: product.type,
-          });
-          
-          setImagePreview({
-            image1: product.image1,
-            image2: product.image2 || '',
+            title: response.data.title,
+            description: response.data.description,
+            price: response.data.price,
+            image1: response.data.image1,
+            image2: response.data.image2 || '',
+            category: response.data.category,
+            material: response.data.material,
+            type: response.data.type
           });
           
           setLoading(false);
         } catch (error) {
-          console.error('Error al obtener producto:', error);
-          setError('No se pudo cargar la información del producto.');
+          console.error('Error al obtener el producto:', error);
           setLoading(false);
         }
       };
       
       fetchProduct();
     }
-  }, [id, isEditMode]);
+  }, [id]);
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
     setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: name === 'price' ? parseFloat(value) || 0 : value
     }));
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    if (files && files.length > 0) {
-      const file = files[0];
-      setImages(prevImages => ({
-        ...prevImages,
-        [name]: file,
-      }));
+    try {
+      if (id) {
+        // Actualizar producto existente
+        await api.put(`/products/${id}`, {
+          ...formData,
+          id: parseInt(id)
+        });
+      } else {
+        // Crear nuevo producto
+        await api.post('/products', formData);
+      }
       
-      // Crear una URL para la vista previa de la imagen
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreview(prevPreviews => ({
-        ...prevPreviews,
-        [name]: imageUrl,
-      }));
+      // Redirigir a la lista de productos
+      navigate('/admin/products');
+    } catch (error) {
+      console.error('Error al guardar el producto:', error);
     }
   };
-  
- // Busca esta parte del código y actualízala:
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  try {
-    setSubmitting(true);
-    setError(null);
-    
-    // Validar formulario
-    if (!formData.title || !formData.description || !formData.price) {
-      setError('Por favor, complete todos los campos obligatorios.');
-      setSubmitting(false);
-      return;
-    }
-    
-    // En modo de creación, requerir al menos una imagen
-    if (!isEditMode && !images.image1) {
-      setError('Por favor, suba al menos una imagen.');
-      setSubmitting(false);
-      return;
-    }
-    
-    // Crear FormData para enviar imágenes
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('price', formData.price);
-    formDataToSend.append('category', formData.category);
-    formDataToSend.append('material', formData.material);
-    formDataToSend.append('type', formData.type);
-    
-    if (images.image1) {
-      formDataToSend.append('images', images.image1);
-    }
-    
-    if (images.image2) {
-      formDataToSend.append('images', images.image2);
-    }
-    
-    // Elimina la variable response que no se usa
-    if (isEditMode) {
-      await api.put(`/products/${id}`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    } else {
-      await api.post('/products', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    }
-    
-    // Redireccionar a la lista de productos
-    navigate('/admin/products');
-  } catch (error) {
-    console.error('Error al guardar el producto:', error);
-    setError('Ocurrió un error al guardar el producto. Por favor, inténtelo de nuevo.');
-    setSubmitting(false);
-  }
-};
   
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <div className="flex-grow flex justify-center items-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-accent"></div>
-        </div>
+        <main className="flex-grow py-12">
+          <div className="container-custom">
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-accent"></div>
+            </div>
+          </div>
+        </main>
         <Footer />
       </div>
     );
@@ -180,7 +131,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       <main className="flex-grow py-12">
         <div className="container-custom">
           <h1 className="text-3xl font-bold mb-8">
-            {isEditMode ? 'Editar Producto' : 'Crear Producto'}
+            {id ? 'Editar Producto' : 'Crear Nuevo Producto'}
           </h1>
           
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -193,214 +144,176 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="lg:col-span-3">
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold">
-                    {isEditMode ? 'Editar Información del Producto' : 'Información del Producto'}
+                  <h2 className="text-lg font-semibold mb-4">
+                    {id ? 'Información del Producto' : 'Nuevo Producto'}
                   </h2>
+                  
+                  <form onSubmit={handleSubmit}>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Título */}
+                        <div>
+                          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                            Título
+                          </label>
+                          <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          />
+                        </div>
+                        
+                        {/* Precio */}
+                        <div>
+                          <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                            Precio
+                          </label>
+                          <div className="mt-1 relative rounded-md shadow-sm">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <span className="text-gray-500 sm:text-sm">$</span>
+                            </div>
+                            <input
+                              type="number"
+                              id="price"
+                              name="price"
+                              min="0"
+                              step="0.01"
+                              value={formData.price}
+                              onChange={handleChange}
+                              required
+                              className="block w-full pl-7 pr-12 rounded-md border-gray-300 focus:border-accent focus:ring-accent"
+                              placeholder="0.00"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Descripción */}
+                      <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                          Descripción
+                        </label>
+                        <textarea
+                          id="description"
+                          name="description"
+                          rows={4}
+                          value={formData.description}
+                          onChange={handleChange}
+                          required
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                        ></textarea>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Imagen 1 */}
+                        <div>
+                          <label htmlFor="image1" className="block text-sm font-medium text-gray-700">
+                            Imagen Principal (URL)
+                          </label>
+                          <input
+                            type="text"
+                            id="image1"
+                            name="image1"
+                            value={formData.image1}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          />
+                        </div>
+                        
+                        {/* Imagen 2 */}
+                        <div>
+                          <label htmlFor="image2" className="block text-sm font-medium text-gray-700">
+                            Imagen Secundaria (URL)
+                          </label>
+                          <input
+                            type="text"
+                            id="image2"
+                            name="image2"
+                            value={formData.image2}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Categoría */}
+                        <div>
+                          <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                            Categoría
+                          </label>
+                          <select
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          >
+                            <option value="">Seleccionar...</option>
+                            <option value="Cuchillos de cocina">Cuchillos de cocina</option>
+                            <option value="Sets">Sets</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Cuchillos especializados">Cuchillos especializados</option>
+                          </select>
+                        </div>
+                        
+                        {/* Material */}
+                        <div>
+                          <label htmlFor="material" className="block text-sm font-medium text-gray-700">
+                            Material
+                          </label>
+                          <input
+                            type="text"
+                            id="material"
+                            name="material"
+                            value={formData.material}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          />
+                        </div>
+                        
+                        {/* Tipo */}
+                        <div>
+                          <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+                            Tipo
+                          </label>
+                          <input
+                            type="text"
+                            id="type"
+                            name="type"
+                            value={formData.type}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-accent focus:ring-accent"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end space-x-3">
+                        <button
+                          type="button"
+                          onClick={() => navigate('/admin/products')}
+                          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-accent/90 focus:outline-none"
+                        >
+                          {id ? 'Actualizar' : 'Crear'}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-                
-                {error && (
-                  <div className="bg-red-50 border-l-4 border-red-400 p-4 m-6">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm text-red-700">
-                          {error}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                        Título*
-                      </label>
-                      <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                        Precio*
-                      </label>
-                      <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                        min="0"
-                        step="0.01"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                        Categoría
-                      </label>
-                      <select
-                        id="category"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                      >
-                        <option value="">Seleccione una categoría</option>
-                        {categories.map(category => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="material" className="block text-sm font-medium text-gray-700 mb-1">
-                        Material
-                      </label>
-                      <select
-                        id="material"
-                        name="material"
-                        value={formData.material}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                      >
-                        <option value="">Seleccione un material</option>
-                        {materials.map(material => (
-                          <option key={material} value={material}>
-                            {material}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-                        Tipo
-                      </label>
-                      <select
-                        id="type"
-                        name="type"
-                        value={formData.type}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                      >
-                        <option value="">Seleccione un tipo</option>
-                        {types.map(type => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                      Descripción*
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="image1" className="block text-sm font-medium text-gray-700 mb-1">
-                        Imagen Principal*
-                      </label>
-                      <input
-                        type="file"
-                        id="image1"
-                        name="image1"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                        required={!isEditMode}
-                      />
-                      {(imagePreview.image1 || isEditMode) && (
-                        <div className="mt-2">
-                          <img
-                            src={imagePreview.image1}
-                            alt="Vista previa"
-                            className="h-32 w-auto object-cover rounded-md"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="image2" className="block text-sm font-medium text-gray-700 mb-1">
-                        Imagen Secundaria
-                      </label>
-                      <input
-                        type="file"
-                        id="image2"
-                        name="image2"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-accent focus:border-accent"
-                      />
-                      {imagePreview.image2 && (
-                        <div className="mt-2">
-                          <img
-                            src={imagePreview.image2}
-                            alt="Vista previa"
-                            className="h-32 w-auto object-cover rounded-md"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end space-x-4">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/admin/products')}
-                      className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium px-4 py-2 rounded-md transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-accent hover:bg-accent/90 text-white font-medium px-4 py-2 rounded-md transition-colors"
-                      disabled={submitting}
-                    >
-                      {submitting ? (
-                        <span className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Guardando...
-                        </span>
-                      ) : (
-                        'Guardar Producto'
-                      )}
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>

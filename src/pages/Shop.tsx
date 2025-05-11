@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import api from '../services/api';
+import productsData from '../data/products.json';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import ProductGrid from '../components/shop/ProductGrid';
 import Filters from '../components/shop/Filters';
 import { Product } from '../types'; // Importar el tipo compartido
-
 
 const Shop: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,48 +21,44 @@ const Shop: React.FC = () => {
   const selectedType = searchParams.get('type');
   
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        
-        const params = new URLSearchParams();
-        if (selectedCategory) params.append('category', selectedCategory);
-        if (selectedMaterial) params.append('material', selectedMaterial);
-        if (selectedType) params.append('type', selectedType);
-        
-        const response = await api.get(`/products?${params.toString()}`);
-        setProducts(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setLoading(false);
+    // Simulamos la carga de datos
+    const timer = setTimeout(() => {
+      // Obtenemos todos los productos del JSON
+      const allProducts: Product[] = productsData.products;
+      
+      // Filtramos según los parámetros de la URL
+      let filteredProducts = [...allProducts];
+      
+      if (selectedCategory) {
+        filteredProducts = filteredProducts.filter(p => p.category === selectedCategory);
       }
-    };
+      
+      if (selectedMaterial) {
+        filteredProducts = filteredProducts.filter(p => p.material === selectedMaterial);
+      }
+      
+      if (selectedType) {
+        filteredProducts = filteredProducts.filter(p => p.type === selectedType);
+      }
+      
+      setProducts(filteredProducts);
+      setLoading(false);
+    }, 500); // Pequeño retraso para simular carga
     
-    fetchProducts();
+    return () => clearTimeout(timer);
   }, [selectedCategory, selectedMaterial, selectedType]);
   
   useEffect(() => {
-    const fetchFilters = async () => {
-      try {
-        // En un escenario real, tendríamos endpoints para obtener categorías, materiales y tipos
-        // Aquí simulamos esto extrayendo valores únicos de los productos
-        const response = await api.get('/products');
-        const allProducts: Product[] = response.data;
-        
-        const uniqueCategories = [...new Set(allProducts.map(p => p.category))];
-        const uniqueMaterials = [...new Set(allProducts.map(p => p.material))];
-        const uniqueTypes = [...new Set(allProducts.map(p => p.type))];
-        
-        setCategories(uniqueCategories);
-        setMaterials(uniqueMaterials);
-        setTypes(uniqueTypes);
-      } catch (error) {
-        console.error('Error fetching filters:', error);
-      }
-    };
+    // Extraemos los valores únicos para los filtros directamente del JSON
+    const allProducts: Product[] = productsData.products;
     
-    fetchFilters();
+    const uniqueCategories = [...new Set(allProducts.map(p => p.category))];
+    const uniqueMaterials = [...new Set(allProducts.map(p => p.material))];
+    const uniqueTypes = [...new Set(allProducts.map(p => p.type))];
+    
+    setCategories(uniqueCategories);
+    setMaterials(uniqueMaterials);
+    setTypes(uniqueTypes);
   }, []);
   
   const handleCategoryChange = (category: string | null) => {
@@ -95,7 +90,6 @@ const Shop: React.FC = () => {
     }
     setSearchParams(newParams);
   };
-  
   
   return (
     <div className="flex flex-col min-h-screen">
